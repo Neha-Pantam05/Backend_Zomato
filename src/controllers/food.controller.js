@@ -30,16 +30,34 @@ async function createFood(req, res) {
 
 async function getFoodItems(req, res) {
   const foodItems = await foodModel.find({});
-  const userLikes = await likeModel.find({ user: req.user._id }).select('food');
-  const likedFoodIds = userLikes.map(like => like.food.toString());
 
-  const userSaves = await saveModel.find({ user: req.user._id }).select('food');
-  const savedFoodIds = userSaves.map(save => save.food.toString());
+  const userId = req.user ? req.user._id : null;
 
-  const foodItemsWithStatus = foodItems.map(item => ({
+  let likedFoodIds = [];
+  let savedFoodIds = [];
+
+  if (userId) {
+    const userLikes = await likeModel
+      .find({ user: userId })
+      .select("food");
+
+    likedFoodIds = userLikes.map((like) =>
+      like.food.toString()
+    );
+
+    const userSaves = await saveModel
+      .find({ user: userId })
+      .select("food");
+
+    savedFoodIds = userSaves.map((save) =>
+      save.food.toString()
+    );
+  }
+
+  const foodItemsWithStatus = foodItems.map((item) => ({
     ...item.toObject(),
     isLiked: likedFoodIds.includes(item._id.toString()),
-    isSaved: savedFoodIds.includes(item._id.toString())
+    isSaved: savedFoodIds.includes(item._id.toString()),
   }));
 
   res.status(200).json({
