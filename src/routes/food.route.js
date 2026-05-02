@@ -18,8 +18,8 @@ router.post(
 
 // GET -> http://localhost:3000/api/food
 router.get("/",
-  authMiddleware.authUserMiddleware, foodController.getFoodItems);
-
+  foodController.getFoodItems
+);
 router.post(
   "/like",
   authMiddleware.authUserMiddleware,
