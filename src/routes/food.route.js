@@ -9,6 +9,7 @@ const upload = multer({
 
 // POST -> http://localhost:3000/api/food
 const router = express.Router();
+
 router.post(
   "/",
   authMiddleware.authFoodPartnerMiddleware,

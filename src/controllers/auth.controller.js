@@ -85,47 +85,50 @@ function logoutUser(req, res) {
 }
 
 async function registerFoodPartner(req, res) {
-  const { name, contactName, phone, email, password } = req.body;
+  try {
+    const { name, contactName, phone, email, password } = req.body;
 
-  const isAccountAlreadyExists = await foodPartnerModel.findOne({
-    email,
-  });
+    const isAccountAlreadyExists = await foodPartnerModel.findOne({
+      email,
+    });
 
-  if (isAccountAlreadyExists) {
-    return res.status(400).json({
-      message: "FoodPatner Already Exists",
+    if (isAccountAlreadyExists) {
+      return res.status(400).json({
+        message: "Food Partner Already Exists",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const foodPartner = await foodPartnerModel.create({
+      name,
+      email,
+      password: hashedPassword,
+      contactName,
+      phone,
+    });
+
+    const token = jwt.sign(
+      {
+        id: foodPartner._id,
+      },
+      process.env.JWT_SECRET
+    );
+
+    res.cookie("token", token);
+
+    res.status(201).json({
+      message: "Food Partner Registered Successfully",
+      foodPartner,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: "Server Error",
+      error: error.message,
     });
   }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const foodPartner = await foodPartnerModel.create({
-    name,
-    email,
-    password: hashedPassword,
-    contactName,
-    phone
-  });
-
-  const token = jwt.sign(
-    {
-      id: foodPartner._id,
-    },
-    process.env.JWT_SECRET,
-  );
-
-  res.cookie("token", token);
-
-  res.status(201).json({
-    message: "Food Patner Registered Successfully",
-    foodPatner: {
-      _id: foodPartner._id,
-      email: foodPartner.email,
-      name: foodPartner.name,
-      contactName: foodPartner.contactName,
-      phone: foodPartner.phone
-    },
-  });
 }
 
 async function loginFoodPartner(req ,res) {
@@ -166,7 +169,7 @@ async function loginFoodPartner(req ,res) {
 
   res.status(200).json({
     message: "Login Successfully",
-    foodPartnerUser: {
+    foodPartner: {
       id: FoodPartnerUser._id,
       email: FoodPartnerUser.email,
       name: FoodPartnerUser.name,

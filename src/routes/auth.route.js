@@ -10,9 +10,9 @@ router.get("/user/logout",authController.logoutUser)
 
 
 // foodPatner Auth API's
-router.post("/foodPartner/register",authController.registerFoodPartner)
-router.post("/foodPartner/login",authController.loginFoodPartner)
-router.get("/foodPartner/logout",authController.logoutFoodPartner)
+router.post("/register", authController.registerFoodPartner);
+router.post("/login",authController.loginFoodPartner)
+router.get("/logout",authController.logoutFoodPartner)
 
 
 module.exports = router;
