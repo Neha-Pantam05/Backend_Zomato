@@ -5,20 +5,24 @@ const authRoutes = require("./routes/auth.route.js")
 const foodRoutes = require("./routes/food.route.js")
 const foodPartnerRoutes = require("./routes/foodPartner.route.js");
 
-const cors = require("cors")
 
 const app = express();
 
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://frontend-zomato.vercel.app"
-  ],
-  credentials: true
-}))
+const cors = require("cors");
+
+app.use(
+  cors({
+    origin: "https://frontend-zomato-8q96uf2ch-neha-pantam-s-projects.vercel.app",
+    credentials: true,
+  })
+);
 
 app.use(express.json());
+
+const cookieParser = require("cookie-parser");
+
 app.use(cookieParser());
+
 
 app.get("/", (req,res) =>{
   res.send("Welcome to Zomato API");
