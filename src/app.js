@@ -12,7 +12,7 @@ const cors = require("cors");
 
 app.use(
   cors({
-    origin: "https://frontend-zomato-8q96uf2ch-neha-pantam-s-projects.vercel.app",
+    origin: "https://frontend-zomato.vercel.app",
     credentials: true,
   })
 );
